@@ -58,5 +58,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
-  return [...staticPages, ...modelPages, ...comparisons, ...toolPages, ...blogPosts];
+  // Provider comparison pages
+  const providerSlugs = [...new Set(models.map((m) => m.providerSlug))].sort();
+  const providerComparisons: MetadataRoute.Sitemap = [];
+  for (let i = 0; i < providerSlugs.length; i++) {
+    for (let j = i + 1; j < providerSlugs.length; j++) {
+      providerComparisons.push({
+        url: `${baseUrl}/compare/providers/${providerSlugs[i]}-vs-${providerSlugs[j]}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      });
+    }
+  }
+
+  return [...staticPages, ...modelPages, ...comparisons, ...providerComparisons, ...toolPages, ...blogPosts];
 }

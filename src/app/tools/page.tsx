@@ -104,6 +104,49 @@ export default function ToolsIndex() {
           ))}
         </div>
       </section>
+
+      {/* Provider Comparisons */}
+      <ProviderComparisons />
     </div>
+  );
+}
+
+function ProviderComparisons() {
+  const providerSlugs = [...new Set(models.map((m) => m.providerSlug))].sort();
+  const providerNames: Record<string, string> = {};
+  for (const m of models) {
+    if (!providerNames[m.providerSlug]) providerNames[m.providerSlug] = m.provider;
+  }
+
+  const pairs: { slugA: string; slugB: string; nameA: string; nameB: string }[] = [];
+  for (let i = 0; i < providerSlugs.length; i++) {
+    for (let j = i + 1; j < providerSlugs.length; j++) {
+      pairs.push({
+        slugA: providerSlugs[i],
+        slugB: providerSlugs[j],
+        nameA: providerNames[providerSlugs[i]],
+        nameB: providerNames[providerSlugs[j]],
+      });
+    }
+  }
+
+  return (
+    <section className="mt-14">
+      <h2 className="text-xl font-semibold mb-2">Provider Comparisons</h2>
+      <p className="text-muted mb-6 text-sm">
+        Compare AI providers head-to-head across their full model lineups, pricing, and benchmarks.
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {pairs.map((p) => (
+          <Link
+            key={`${p.slugA}-${p.slugB}`}
+            href={`/compare/providers/${p.slugA}-vs-${p.slugB}`}
+            className="px-4 py-3 rounded-lg border border-border hover:border-accent/50 hover:bg-card-hover transition-all text-sm"
+          >
+            <span className="font-medium">{p.nameA} vs {p.nameB}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
