@@ -1,4 +1,5 @@
 import { models } from "@/data/models";
+import { useCases } from "@/data/use-cases";
 import { getAllPosts } from "@/lib/blog";
 import type { MetadataRoute } from "next";
 
@@ -38,5 +39,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...modelPages, ...comparisons, ...blogPosts];
+  const toolPages: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/tools`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
+    { url: `${baseUrl}/tools/token-calculator`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
+    { url: `${baseUrl}/tools/context-window`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
+    { url: `${baseUrl}/tools/api-cost-estimator`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
+    ...useCases.map((uc) => ({
+      url: `${baseUrl}/tools/best-for/${uc.id}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+  ];
+
+  return [...staticPages, ...modelPages, ...comparisons, ...toolPages, ...blogPosts];
 }
