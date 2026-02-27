@@ -62,6 +62,18 @@ export default async function ModelPage({
         <Stat label="Max output" value={formatContext(model.maxOutput)} />
       </div>
 
+      {/* Long context pricing */}
+      {model.longContextPricing && (
+        <div className="mb-10 p-4 rounded-lg border border-yellow/30 bg-yellow/5">
+          <p className="text-sm">
+            <span className="font-semibold text-yellow">Long context pricing:</span>{" "}
+            Above {formatContext(model.longContextPricing.threshold)} tokens, pricing increases to{" "}
+            <span className="font-mono">${model.longContextPricing.inputPrice}</span> input /{" "}
+            <span className="font-mono">${model.longContextPricing.outputPrice}</span> output per 1M tokens.
+          </p>
+        </div>
+      )}
+
       {/* Capabilities */}
       <section className="mb-10">
         <h2 className="text-lg font-semibold mb-3">Capabilities</h2>

@@ -16,6 +16,11 @@ export interface AIModel {
     humanEval?: number;
     gpqa?: number;
   };
+  longContextPricing?: {
+    threshold: number; // tokens above which premium pricing kicks in
+    inputPrice: number;
+    outputPrice: number;
+  };
   strengths: string[];
   weaknesses: string[];
 }
@@ -37,6 +42,7 @@ export const models: AIModel[] = [
     category: "flagship",
     capabilities: ["text", "vision", "tool-use", "code", "reasoning"],
     benchmarks: { mmluPro: 89.5, humanEval: 95.0, gpqa: 75.5 },
+    longContextPricing: { threshold: 200000, inputPrice: 10, outputPrice: 37.5 },
     strengths: [
       "Best-in-class agentic tool use and coding",
       "1M context available in beta (Tier 4)",
@@ -53,7 +59,7 @@ export const models: AIModel[] = [
     provider: "Anthropic",
     providerSlug: "anthropic",
     description:
-      "Matches Opus 4.5 quality at Sonnet pricing. Best value in the Claude lineup for production use.",
+      "Matches Opus 4.5 quality at Sonnet pricing. Best value in the Claude lineup for production use. 1M context in beta.",
     inputPrice: 3,
     outputPrice: 15,
     contextWindow: 200000,
@@ -62,13 +68,14 @@ export const models: AIModel[] = [
     category: "mid",
     capabilities: ["text", "vision", "tool-use", "code", "reasoning"],
     benchmarks: { mmluPro: 86.0, humanEval: 94.0, gpqa: 70.0 },
+    longContextPricing: { threshold: 200000, inputPrice: 6, outputPrice: 22.5 },
     strengths: [
       "Opus 4.5 quality at 1/5th the cost",
       "Best value for production workloads",
-      "Fast response times",
+      "1M context in beta",
     ],
     weaknesses: [
-      "200K context limit",
+      "Long context pricing doubles above 200K",
       "Slightly below Opus 4.6 on hardest tasks",
     ],
   },
@@ -314,6 +321,7 @@ export const models: AIModel[] = [
     category: "flagship",
     capabilities: ["text", "vision", "tool-use", "code", "reasoning", "audio"],
     benchmarks: { mmluPro: 91.0, humanEval: 95.0, gpqa: 94.3 },
+    longContextPricing: { threshold: 200000, inputPrice: 4, outputPrice: 18 },
     strengths: [
       "#1 on 12 of 18 tracked benchmarks",
       "94.3% GPQA Diamond — highest of any model",
@@ -340,6 +348,7 @@ export const models: AIModel[] = [
     category: "flagship",
     capabilities: ["text", "vision", "tool-use", "code", "reasoning", "audio"],
     benchmarks: { mmluPro: 89.8, humanEval: 94.0, gpqa: 77.0 },
+    longContextPricing: { threshold: 200000, inputPrice: 4, outputPrice: 18 },
     strengths: [
       "Stable and well-tested",
       "1M token context window",
