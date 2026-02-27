@@ -29,37 +29,44 @@ function scoreModel(model: AIModel, uc: UseCase): number {
   );
   if (!hasRequired) return -1;
 
-  // Benchmark score (0-100) — the most important signal of quality
+  // Benchmark score (0-100)
   let benchScore = 0;
   if (uc.specificBenchmark && model.benchmarks[uc.specificBenchmark]) {
+    // Model has the specific benchmark — use it directly
     benchScore = model.benchmarks[uc.specificBenchmark]!;
-  } else {
+  } else if (uc.specificBenchmark) {
+    // Model is MISSING the specific benchmark — penalized fallback
     const scores = Object.values(model.benchmarks).filter(Boolean) as number[];
-    benchScore = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 40;
+    benchScore = scores.length > 0
+      ? (scores.reduce((a, b) => a + b, 0) / scores.length) * 0.7
+      : 30;
+  } else {
+    // No specific benchmark — use mmluPro as general intelligence proxy
+    benchScore = model.benchmarks.mmluPro ?? 50;
   }
 
-  // Pricing score (logarithmic — diminishing returns on cheapness)
+  // Pricing score (logarithmic — less extreme than before)
   const combinedPrice = model.inputPrice + model.outputPrice;
   const maxPrice = Math.max(...models.map((m) => m.inputPrice + m.outputPrice));
   const priceRatio = combinedPrice / maxPrice;
-  const priceScore = (1 - Math.pow(priceRatio, 0.4)) * 100;
+  const priceScore = (1 - Math.pow(priceRatio, 0.5)) * 100;
 
-  // Context score (capped at contextCap — beyond that, diminishing returns)
+  // Context score (capped — beyond contextCap, no benefit)
   const effectiveCtx = Math.min(model.contextWindow, uc.contextCap);
   const ctxScore = (effectiveCtx / uc.contextCap) * 100;
 
-  // Output score (normalized, capped at 128K)
-  const maxOutput = Math.min(model.maxOutput, 128000);
-  const outputScore = (maxOutput / 128000) * 100;
+  // Output score (capped at 64K — 128K is extreme outlier, shouldn't dominate)
+  const effectiveOutput = Math.min(model.maxOutput, 64000);
+  const outputScore = (effectiveOutput / 64000) * 100;
 
-  // Capability bonuses
+  // Capability bonuses (stronger than before)
   let capBonus = 0;
   for (const cap of uc.capabilityBonuses) {
-    if (model.capabilities.includes(cap)) capBonus += 8;
+    if (model.capabilities.includes(cap)) capBonus += 15;
   }
 
   // Category bonus
-  const categoryBonus = uc.preferredCategory.includes(model.category) ? 5 : 0;
+  const categoryBonus = uc.preferredCategory.includes(model.category) ? 10 : 0;
 
   return (
     benchScore * uc.weightBenchmarks +
@@ -85,9 +92,13 @@ export default async function BestForPage({
     .map((pick) => ({ pick, model: getModelById(pick.modelId) }))
     .filter((p) => p.model) as { pick: typeof uc.topPicks[0]; model: AIModel }[];
 
-  // Full scored ranking
+  // Full scored ranking (curated picks get expert-review bonus)
+  const topPickIds = new Set(uc.topPicks.map((p) => p.modelId));
   const scored = models
-    .map((m) => ({ model: m, score: scoreModel(m, uc) }))
+    .map((m) => ({
+      model: m,
+      score: scoreModel(m, uc) + (topPickIds.has(m.id) ? 25 : 0),
+    }))
     .filter((s) => s.score >= 0)
     .sort((a, b) => b.score - a.score);
 
