@@ -8,7 +8,7 @@ export default function Home() {
 
   const popularComparisons = [
     ["claude-opus-46", "gpt-53-codex"],
-    ["claude-sonnet-46", "gemini-3-pro"],
+    ["claude-sonnet-46", "gemini-31-pro"],
     ["gpt-4o-mini", "gemini-25-flash"],
     ["deepseek-v3", "llama-4-maverick"],
     ["claude-opus-46", "gpt-52-codex"],

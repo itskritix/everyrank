@@ -300,12 +300,38 @@ export const models: AIModel[] = [
 
   // ── Google ─────────────────────────────────────────────
   {
+    id: "gemini-31-pro",
+    name: "Gemini 3.1 Pro",
+    provider: "Google",
+    providerSlug: "google",
+    description:
+      "Google's newest flagship. #1 on 12 of 18 benchmarks. 77.1% ARC-AGI-2, 94.3% GPQA Diamond.",
+    inputPrice: 2,
+    outputPrice: 12,
+    contextWindow: 1000000,
+    maxOutput: 64000,
+    releaseDate: "2026-02-19",
+    category: "flagship",
+    capabilities: ["text", "vision", "tool-use", "code", "reasoning", "audio"],
+    benchmarks: { mmluPro: 91.0, humanEval: 95.0, gpqa: 94.3 },
+    strengths: [
+      "#1 on 12 of 18 tracked benchmarks",
+      "94.3% GPQA Diamond — highest of any model",
+      "Same price as Gemini 3 Pro (free upgrade)",
+      "1M context with configurable thinking levels",
+    ],
+    weaknesses: [
+      "Still in preview",
+      "Context-tiered pricing ($4/$18 above 200K)",
+    ],
+  },
+  {
     id: "gemini-3-pro",
     name: "Gemini 3 Pro",
     provider: "Google",
     providerSlug: "google",
     description:
-      "Google's latest flagship. Top MMLU-Pro scores and massive context window.",
+      "Google's previous flagship. Still strong, same pricing as 3.1 Pro.",
     inputPrice: 2,
     outputPrice: 12,
     contextWindow: 1000000,
@@ -315,12 +341,12 @@ export const models: AIModel[] = [
     capabilities: ["text", "vision", "tool-use", "code", "reasoning", "audio"],
     benchmarks: { mmluPro: 89.8, humanEval: 94.0, gpqa: 77.0 },
     strengths: [
-      "Highest MMLU-Pro score",
+      "Stable and well-tested",
       "1M token context window",
       "Strong multimodal with audio",
     ],
     weaknesses: [
-      "Can be verbose",
+      "Being superseded by 3.1 Pro",
       "Context-tiered pricing ($4/$18 above 200K)",
     ],
   },
