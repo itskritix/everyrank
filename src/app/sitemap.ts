@@ -44,6 +44,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/tools/token-calculator`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
     { url: `${baseUrl}/tools/context-window`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
     { url: `${baseUrl}/tools/api-cost-estimator`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
+    { url: `${baseUrl}/tools/prompt-cost`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.8 },
     ...useCases.map((uc) => ({
       url: `${baseUrl}/tools/best-for/${uc.id}`,
       lastModified: new Date(),

@@ -28,6 +28,12 @@ const tools = [
     href: "/tools/api-cost-estimator",
     icon: "📊",
   },
+  {
+    name: "Prompt Cost Calculator",
+    description: "Paste your prompt text and see exactly what it costs across every AI model. Instant cost breakdown.",
+    href: "/tools/prompt-cost",
+    icon: "✏️",
+  },
 ];
 
 export default function ToolsIndex() {
