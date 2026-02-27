@@ -50,6 +50,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
+    ...models.map((m) => ({
+      url: `${baseUrl}/tools/alternatives/${m.id}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
   ];
 
   return [...staticPages, ...modelPages, ...comparisons, ...toolPages, ...blogPosts];

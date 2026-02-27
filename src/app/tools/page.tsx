@@ -1,3 +1,4 @@
+import { models } from "@/data/models";
 import { useCases } from "@/data/use-cases";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -57,7 +58,7 @@ export default function ToolsIndex() {
       </section>
 
       {/* Best model for... */}
-      <section>
+      <section className="mb-14">
         <h2 className="text-xl font-semibold mb-2">
           Best AI Model For...
         </h2>
@@ -74,6 +75,30 @@ export default function ToolsIndex() {
               <span className="font-medium">Best for {uc.shortName}</span>
               <span className="text-muted block text-xs mt-0.5 truncate">
                 {uc.description.slice(0, 60)}...
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* X Alternatives */}
+      <section>
+        <h2 className="text-xl font-semibold mb-2">
+          Model Alternatives
+        </h2>
+        <p className="text-muted mb-6 text-sm">
+          Thinking about switching? See the best alternatives for each of the {models.length} models we track.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          {models.map((m) => (
+            <Link
+              key={m.id}
+              href={`/tools/alternatives/${m.id}`}
+              className="px-4 py-3 rounded-lg border border-border hover:border-accent/50 hover:bg-card-hover transition-all text-sm"
+            >
+              <span className="font-medium">{m.name} Alternatives</span>
+              <span className="text-muted block text-xs mt-0.5">
+                {m.provider} &middot; ${m.inputPrice}/${m.outputPrice} per 1M
               </span>
             </Link>
           ))}
