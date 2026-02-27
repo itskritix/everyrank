@@ -72,8 +72,8 @@ function avgBenchmark(m: AIModel): number {
 }
 
 function fmtCtx(tokens: number): string {
-  if (tokens >= 1000000) return `${tokens / 1000000}M`;
-  return `${tokens / 1000}K`;
+  if (tokens >= 1000000) return `${Math.round(tokens / 1000000 * 10) / 10}M`;
+  return `${Math.round(tokens / 1000)}K`;
 }
 
 function priceDiff(source: number, alt: number): { label: string; className: string } {

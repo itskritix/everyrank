@@ -357,6 +357,6 @@ function MiniStat({ label, value }: { label: string; value: string }) {
 }
 
 function fmtCtx(tokens: number): string {
-  if (tokens >= 1000000) return `${tokens / 1000000}M`;
-  return `${tokens / 1000}K`;
+  if (tokens >= 1000000) return `${Math.round(tokens / 1000000 * 10) / 10}M`;
+  return `${Math.round(tokens / 1000)}K`;
 }
