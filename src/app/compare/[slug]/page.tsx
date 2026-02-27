@@ -49,6 +49,15 @@ export default async function ComparisonPage({
   const b = getModelById(parsed.bId);
   if (!a || !b) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `${a.name} vs ${b.name}: Pricing, Benchmarks & Comparison`,
+    description: `Compare ${a.name} and ${b.name} side-by-side on pricing, benchmarks, and capabilities.`,
+    dateModified: new Date().toISOString(),
+    publisher: { "@type": "Organization", name: "EveryRank", url: "https://everyrank.app" },
+  };
+
   const priceDiff = {
     input: ((b.inputPrice - a.inputPrice) / a.inputPrice) * 100,
     output: ((b.outputPrice - a.outputPrice) / a.outputPrice) * 100,
@@ -56,6 +65,10 @@ export default async function ComparisonPage({
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Link
         href="/compare"
         className="text-sm text-muted hover:text-foreground mb-6 inline-block"
