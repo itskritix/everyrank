@@ -7,11 +7,11 @@ export default function Home() {
   const cheapest = sorted.slice(0, 5);
 
   const popularComparisons = [
-    ["claude-opus-4", "gpt-5"],
-    ["gemini-25-pro", "claude-sonnet-4"],
+    ["claude-opus-46", "gpt-53-codex"],
+    ["claude-sonnet-46", "gemini-3-pro"],
     ["gpt-4o-mini", "gemini-25-flash"],
     ["deepseek-v3", "llama-4-maverick"],
-    ["claude-opus-4", "gemini-25-pro"],
+    ["claude-opus-46", "gpt-52-codex"],
     ["gpt-5", "gemini-25-pro"],
   ];
 
