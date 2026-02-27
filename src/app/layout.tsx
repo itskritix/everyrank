@@ -90,6 +90,12 @@ function Nav() {
           >
             Pricing
           </a>
+          <a
+            href="/blog"
+            className="hover:text-foreground transition-colors"
+          >
+            Blog
+          </a>
         </div>
       </div>
     </nav>
