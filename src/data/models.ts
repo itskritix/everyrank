@@ -568,6 +568,88 @@ export const models: AIModel[] = [
     ],
   },
 
+  // ── Zhipu AI (GLM) ────────────────────────────────────
+  {
+    id: "glm-5",
+    name: "GLM-5",
+    provider: "Zhipu AI",
+    providerSlug: "zhipu",
+    description:
+      "Zhipu AI's 744B MoE flagship. Open-weight under MIT license. Strong on SWE-Bench and agentic tasks.",
+    inputPrice: 1,
+    outputPrice: 3.2,
+    contextWindow: 200000,
+    maxOutput: 128000,
+    releaseDate: "2026-02-11",
+    category: "flagship",
+    capabilities: ["text", "vision", "tool-use", "code", "reasoning"],
+    benchmarks: { mmluPro: 70.4, humanEval: 91.0, gpqa: 72.0 },
+    strengths: [
+      "Open-weight (MIT license) — self-hostable",
+      "77.8% SWE-Bench Verified — top-tier coding",
+      "128K max output — huge generation window",
+    ],
+    weaknesses: [
+      "MMLU-Pro lags behind Western flagships",
+      "744B parameters — heavy to self-host",
+      "China-based — availability concerns",
+    ],
+  },
+  {
+    id: "glm-47",
+    name: "GLM-4.7",
+    provider: "Zhipu AI",
+    providerSlug: "zhipu",
+    description:
+      "Zhipu's best coding and reasoning model. 358B MoE, open-weight, strong math and browsing benchmarks.",
+    inputPrice: 0.6,
+    outputPrice: 2.2,
+    contextWindow: 200000,
+    maxOutput: 128000,
+    releaseDate: "2025-12-22",
+    category: "mid",
+    capabilities: ["text", "vision", "code", "reasoning"],
+    benchmarks: { mmluPro: 84.3, gpqa: 85.7 },
+    strengths: [
+      "Excellent value — strong benchmarks at $0.60/$2.20",
+      "Open-weight (MIT license)",
+      "Top scores on AIME 25 and BrowseComp",
+    ],
+    weaknesses: [
+      "No tool-use support yet",
+      "358B parameters — still heavy for self-hosting",
+      "Smaller ecosystem than OpenAI/Anthropic",
+    ],
+  },
+
+  // ── MiniMax ──────────────────────────────────────────
+  {
+    id: "minimax-m25",
+    name: "MiniMax M2.5",
+    provider: "MiniMax",
+    providerSlug: "minimax",
+    description:
+      "230B MoE (10B active). Frontier-level performance at 1/20th the cost of proprietary flagships. MIT license.",
+    inputPrice: 0.3,
+    outputPrice: 1.2,
+    contextWindow: 200000,
+    maxOutput: 128000,
+    releaseDate: "2026-02-12",
+    category: "open-source",
+    capabilities: ["text", "code", "reasoning"],
+    benchmarks: { mmluPro: 82.0, humanEval: 90.0 },
+    strengths: [
+      "Frontier quality at budget pricing ($0.30/$1.20)",
+      "80.2% SWE-Bench Verified — among the best",
+      "Open-source (MIT) with 10B active params — easy to run",
+    ],
+    weaknesses: [
+      "Text-only — no vision or audio",
+      "No tool-use support",
+      "Newer provider — smaller ecosystem",
+    ],
+  },
+
   // ── Mistral ────────────────────────────────────────────
   {
     id: "mistral-large-3",
