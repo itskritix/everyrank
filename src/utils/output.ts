@@ -3,11 +3,17 @@ import chalk from "chalk";
 
 export type OutputFormat = "table" | "json" | "csv";
 
+export interface RelatedQuery {
+  query: string;
+  interest: number;
+  type: "top" | "rising";
+}
+
 export interface KeywordResult {
   keyword: string;
   popularity: number;
   trend?: string;
-  relatedQueries?: string[];
+  relatedQueries?: RelatedQuery[];
 }
 
 export function formatOutput(
@@ -35,9 +41,10 @@ function formatTable(data: KeywordResult[]): string {
       chalk.cyan("Keyword"),
       chalk.cyan("Interest (0-100)"),
       chalk.cyan("Trend"),
-      chalk.cyan("Related Queries"),
+      chalk.cyan("Top Related"),
+      chalk.cyan("Rising Related"),
     ],
-    colWidths: [25, 18, 14, 40],
+    colWidths: [22, 18, 14, 30, 30],
     wordWrap: true,
   });
 
@@ -49,11 +56,22 @@ function formatTable(data: KeywordResult[]): string {
           ? chalk.red("v declining")
           : chalk.yellow("~ stable");
 
+    const topQueries = (item.relatedQueries || [])
+      .filter((r) => r.type === "top")
+      .map((r) => `${r.query} (${colorInterest(r.interest)})`)
+      .join("\n") || "-";
+
+    const risingQueries = (item.relatedQueries || [])
+      .filter((r) => r.type === "rising")
+      .map((r) => `${r.query} (+${r.interest}%)`)
+      .join("\n") || "-";
+
     table.push([
       item.keyword,
       colorInterest(item.popularity),
       trendLabel,
-      item.relatedQueries?.join(", ") || "-",
+      topQueries,
+      risingQueries,
     ]);
   }
 
@@ -61,11 +79,21 @@ function formatTable(data: KeywordResult[]): string {
 }
 
 function formatCsv(data: KeywordResult[]): string {
-  const header = "keyword,interest,trend,related_queries";
-  const rows = data.map(
-    (item) =>
-      `"${item.keyword}",${item.popularity},"${item.trend || ""}","${(item.relatedQueries || []).join("; ")}"`
-  );
+  const header = "keyword,interest,trend,related_query,related_score,related_type";
+  const rows: string[] = [];
+  for (const item of data) {
+    if (item.relatedQueries && item.relatedQueries.length > 0) {
+      for (const rq of item.relatedQueries) {
+        rows.push(
+          `"${item.keyword}",${item.popularity},"${item.trend || ""}","${rq.query}",${rq.interest},"${rq.type}"`
+        );
+      }
+    } else {
+      rows.push(
+        `"${item.keyword}",${item.popularity},"${item.trend || ""}","","",""`
+      );
+    }
+  }
   return [header, ...rows].join("\n");
 }
 

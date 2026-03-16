@@ -1,5 +1,5 @@
 import fetch, { Response } from "node-fetch";
-import { KeywordResult } from "../utils/output";
+import { KeywordResult, RelatedQuery } from "../utils/output";
 
 const TRENDS_EXPLORE_URL =
   "https://trends.google.com/trends/api/explore";
@@ -170,7 +170,7 @@ async function getInterestOverTime(
  */
 async function getRelatedQueries(
   widget: TrendsWidget
-): Promise<{ query: string; value: number }[]> {
+): Promise<{ top: { query: string; value: number }[]; rising: { query: string; value: number }[] }> {
   const params = new URLSearchParams({
     hl: "en-US",
     tz: "0",
@@ -183,21 +183,26 @@ async function getRelatedQueries(
   );
 
   const raw = await response.text();
+
   const data = sanitizeJson(raw);
 
   const ranked = data?.default?.rankedList || [];
-  const queries: { query: string; value: number }[] = [];
+  const top: { query: string; value: number }[] = [];
+  const rising: { query: string; value: number }[] = [];
 
-  for (const list of ranked) {
-    for (const item of list.rankedKeyword || []) {
-      queries.push({
-        query: item.query,
-        value: item.value,
-      });
+  // First list is "Top" (interest 0-100), second is "Rising" (% growth)
+  if (ranked[0]) {
+    for (const item of ranked[0].rankedKeyword || []) {
+      top.push({ query: item.query, value: item.value });
+    }
+  }
+  if (ranked[1]) {
+    for (const item of ranked[1].rankedKeyword || []) {
+      rising.push({ query: item.query, value: item.value });
     }
   }
 
-  return queries;
+  return { top, rising };
 }
 
 /**
@@ -214,8 +219,8 @@ export async function getGoogleTrendsData(
 
   const widgets = await getExploreWidgets(batch, geo, timeRange);
 
-  const interestWidget = widgets.find((w) => w.id === "TIMESERIES");
-  const relatedWidgets = widgets.filter((w) => w.id === "RELATED_QUERIES");
+  const interestWidget = widgets.find((w) => w.id.includes("TIMESERIES"));
+  const relatedWidgets = widgets.filter((w) => w.id.includes("RELATED_QUERIES"));
 
   let interestData: { avg: number; trend: string }[] = [];
 
@@ -227,12 +232,22 @@ export async function getGoogleTrendsData(
 
   for (let i = 0; i < batch.length; i++) {
     const interest = interestData[i];
-    let relatedQueries: string[] = [];
+    let relatedQueries: RelatedQuery[] = [];
 
     if (relatedWidgets[i]) {
       try {
         const related = await getRelatedQueries(relatedWidgets[i]);
-        relatedQueries = related.slice(0, 5).map((r) => r.query);
+        const topMapped = related.top.slice(0, 5).map((r) => ({
+          query: r.query,
+          interest: r.value,
+          type: "top" as const,
+        }));
+        const risingMapped = related.rising.slice(0, 5).map((r) => ({
+          query: r.query,
+          interest: r.value,
+          type: "rising" as const,
+        }));
+        relatedQueries = [...topMapped, ...risingMapped];
       } catch {
         // Related queries are optional
       }
